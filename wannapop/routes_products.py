@@ -70,7 +70,7 @@ def product_create():
 @perm_required(Action.products_read)
 def product_read(product_id):
     # select amb join i 1 resultat
-    result = db.session.query(Product, Category, Status, BannedProduct).join(Category).join(Status).outerjoin(BannedProduct).filter(Product.id == product_id).one_or_none()
+    result = Product.get_with(product_id, BannedProduct)
 
     if not result:
         abort(404)
@@ -129,7 +129,7 @@ def product_update(product_id):
 @perm_required(Action.products_delete)
 def product_delete(product_id):
     # select amb 1 resultat
-    product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
+    product = Product.get(product_id)
 
     if not product:
         abort(404)
