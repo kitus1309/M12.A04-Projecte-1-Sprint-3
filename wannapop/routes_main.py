@@ -58,7 +58,7 @@ def profile():
             
         return redirect(url_for('main_bp.profile'))
     else:
-        blocked = db.session.query(BlockedUser).filter(BlockedUser.user_id == current_user.id).one_or_none()
+        blocked = BlockedUser.get_filtered_by(user_id=current_user.id)
 
         form.name.data = current_user.name
         form.email.data = current_user.email    

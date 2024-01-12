@@ -80,7 +80,7 @@ def unblock_user(user_id):
 @admin_bp.route('/admin/products/<int:product_id>/ban', methods=["GET", "POST"])
 @role_required(Role.moderator)
 def ban_product(product_id):
-    result = db.session.query(Product, BannedProduct).outerjoin(BannedProduct).filter(Product.id == product_id).one_or_none()
+    result = Product.get_with(product_id, BannedProduct)
     if not result:
         abort(404)
     
@@ -109,7 +109,7 @@ def ban_product(product_id):
 @admin_bp.route('/admin/products/<int:product_id>/unban', methods=["GET", "POST"])
 @role_required(Role.moderator)
 def unban_product(product_id):
-    result = db.session.query(Product, BannedProduct).outerjoin(BannedProduct).filter(Product.id == product_id).one_or_none()
+    result = Product.get_with(product_id, BannedProduct)
     if not result:
         abort(404)
     

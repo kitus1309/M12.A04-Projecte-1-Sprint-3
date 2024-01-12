@@ -22,7 +22,7 @@ def templates_processor():
 @perm_required(Action.products_list)
 def product_list():
     # select amb join que retorna una llista de resultats
-    products = db.session.query(Product, Category, BannedProduct).join(Category).outerjoin(BannedProduct).order_by(Product.id.asc()).all()
+    products = Product.get_all_with(BannedProduct)
 
     return render_template('products/list.html', products = products)
 
@@ -30,7 +30,7 @@ def product_list():
 @perm_required(Action.products_create)
 def product_create(): 
     # usuari bloquejat, no pot crear productes
-    if db.session.query(BlockedUser).filter(BlockedUser.user_id == current_user.id).one_or_none():
+    if BlockedUser.get_filtered_by(user_id=current_user.id):
         abort(403)
 
     # selects que retornen una llista de resultats
@@ -89,7 +89,7 @@ def product_read(product_id):
 @perm_required(Action.products_update)
 def product_update(product_id):
     # select amb 1 resultat
-    product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
+    product = Product.get(product_id)
     
     if not product:
         abort(404)
