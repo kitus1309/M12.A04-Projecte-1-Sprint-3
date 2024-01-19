@@ -41,7 +41,7 @@ Executa:
     flask --debug run
 
 I obre un navegador a l'adreça: [http://127.0.0.1:5000](http://127.0.0.1:5000).
-
+git bra
 Aquesta comanda executa el codi de [wsgi.py](./wsgi.py).
 
 Per autenticarte, consula al fitxer [database.sql](./sqlite/database.sql) els usuaris de prova disponibles.

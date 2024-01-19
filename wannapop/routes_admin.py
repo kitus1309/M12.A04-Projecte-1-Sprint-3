@@ -15,16 +15,22 @@ def admin_index():
 @admin_bp.route('/admin/users')
 @role_required(Role.admin)
 def admin_users():
-    users = db.session.query(User, BlockedUser).outerjoin(BlockedUser).order_by(User.id.asc()).all()
+    users = User.get_all_with(BlockedUser)
     return render_template('admin/users/list.html', users=users)
 
 @admin_bp.route('/admin/users/<int:user_id>/block', methods=["GET", "POST"])
 @role_required(Role.admin)
 def block_user(user_id):
-    result = db.session.query(User, BlockedUser).outerjoin(BlockedUser).filter(User.id == user_id).one_or_none()
-    if not result:
+    user = User.get(user_id)
+    blocked = BlockedUser.get_filtered_by(user_id=user_id)
+
+    if not user:
         abort(404)
     
+    
+    (user, blocked) = result
+
+
     (user, blocked) = result
 
     if blocked:
@@ -37,15 +43,8 @@ def block_user(user_id):
 
     form = BlockUserForm()
     if form.validate_on_submit():
-        new_block = BlockedUser();
-        # carregar dades de la URL
-        new_block.user_id = user.id
-        # carregar dades del formulari
-        form.populate_obj(new_block)
-        # insert!
-        db.session.add(new_block)
-        db.session.commit()
-        # retornar al llistat
+        new_block = BlockedUser(user_id=user.id, message=form.message.data)
+        new_block.create()
         flash("Compte d'usuari/a bloquejat", "success")
         return redirect(url_for('admin_bp.admin_users'))
 
@@ -54,10 +53,20 @@ def block_user(user_id):
 @admin_bp.route('/admin/users/<int:user_id>/unblock', methods=["GET", "POST"])
 @role_required(Role.admin)
 def unblock_user(user_id):
-    result = db.session.query(User, BlockedUser).outerjoin(BlockedUser).filter(User.id == user_id).one_or_none()
-    if not result:
+    user = User.get(user_id)
+    blocked = BlockedUser.get_filtered_by(user_id=user_id)
+
+    if not user or not blocked:
         abort(404)
     
+    
+    (user, blocked) = result
+
+    if not blocked:
+        flash("Compte d'usuari/a no bloquejat", "error")
+        return redirect(url_for('admin_bp.admin_users'))
+
+
     (user, blocked) = result
 
     if not blocked:
@@ -70,8 +79,7 @@ def unblock_user(user_id):
     
     form = ConfirmForm()
     if form.validate_on_submit():
-        db.session.delete(blocked)
-        db.session.commit()
+        blocked.delete()
         flash("Compte d'usuari/a desbloquejat", "success")
         return redirect(url_for('admin_bp.admin_users'))
     
@@ -80,11 +88,11 @@ def unblock_user(user_id):
 @admin_bp.route('/admin/products/<int:product_id>/ban', methods=["GET", "POST"])
 @role_required(Role.moderator)
 def ban_product(product_id):
-    result = Product.get_with(product_id, BannedProduct)
-    if not result:
+    product = Product.get(product_id)
+    banned = BannedProduct.get_filtered_by(product_id=product_id)
+
+    if not product:
         abort(404)
-    
-    (product, banned) = result
 
     if banned:
         flash("Producte ja prohibit", "error")
@@ -92,15 +100,8 @@ def ban_product(product_id):
 
     form = BanProductForm()
     if form.validate_on_submit():
-        new_banned = BannedProduct();
-        # carregar dades de la URL
-        new_banned.product_id = product.id
-        # carregar dades del formulari
-        form.populate_obj(new_banned)
-        # insert!
-        db.session.add(new_banned)
-        db.session.commit()
-        # retornar al llistat
+        new_banned = BannedProduct(product_id=product.id, reason=form.reason.data)
+        new_banned.create()
         flash("Producte prohibit", "success")
         return redirect(url_for('products_bp.product_list'))
 
@@ -109,20 +110,15 @@ def ban_product(product_id):
 @admin_bp.route('/admin/products/<int:product_id>/unban', methods=["GET", "POST"])
 @role_required(Role.moderator)
 def unban_product(product_id):
-    result = Product.get_with(product_id, BannedProduct)
-    if not result:
+    product = Product.get(product_id)
+    banned = BannedProduct.get_filtered_by(product_id=product_id)
+    
+    if not product or not banned:
         abort(404)
-    
-    (product, banned) = result
-    
-    if not banned:
-        flash("Producte no prohibit", "error")
-        return redirect(url_for('products_bp.product_list'))
     
     form = ConfirmForm()
     if form.validate_on_submit():
-        db.session.delete(banned)
-        db.session.commit()
+        banned.delete()
         flash("Producte permès", "success")
         return redirect(url_for('products_bp.product_list'))
 
