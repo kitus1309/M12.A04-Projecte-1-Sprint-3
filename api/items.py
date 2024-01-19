@@ -3,12 +3,21 @@ from .errors import not_found, bad_request
 from .. import db_manager as db
 from ..models import Item, Store
 from ..helper_json import json_request, json_response
-from flask import current_app
+from flask import current_app, request
 
 # List
 @api_bp.route('/items', methods=['GET'])
 def get_items():
-    items_with_store = Item.get_all_with(Store)
+    search = request.args.get('search')
+    if search:
+        # Watch SQL at terminal
+        Item.db_enable_debug()
+        # Filter using query param
+        my_filter = Item.nom.like('%' + search + '%')
+        items_with_store = Item.db_query_with(Store).filter(my_filter)
+    else:
+        # No filter
+        items_with_store = Item.get_all_with(Store)
     data = Item.to_dict_collection(items_with_store)
     return json_response(data)
 
