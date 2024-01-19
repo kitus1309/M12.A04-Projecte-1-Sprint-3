@@ -82,6 +82,11 @@ class Product(db.Model, BaseMixin, SerializableMixin):
     seller_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created = db.Column(db.DateTime, server_default=func.now())
     updated = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    @classmethod
+    def get_all_with(cls, join_cls):
+        return db.session.query(cls, Category, join_cls). \
+            join(Category, cls.category_id == Category.id). \
+            outerjoin(join_cls).order_by(cls.id.asc()).all()
 
 class Category(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "categories"

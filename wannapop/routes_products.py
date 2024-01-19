@@ -21,10 +21,9 @@ def templates_processor():
 @products_bp.route('/products/list')
 @perm_required(Action.products_list)
 def product_list():
-    # select amb join que retorna una llista de resultats
     products = Product.get_all_with(BannedProduct)
 
-    return render_template('products/list.html', products = products)
+    return render_template('products/list.html', products=products)
 
 @products_bp.route('/products/create', methods = ['POST', 'GET'])
 @perm_required(Action.products_create)
