@@ -51,3 +51,19 @@ CREATE TABLE banned_products (
 	created DATETIME NOT NULL DEFAULT (DATETIME('now')),
 	FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    product_id INTEGER,
+    buyer_id INTEGER,
+    offer REAL,
+    created DATETIME,
+    FOREIGN KEY (product_id) REFERENCES products (id),
+    FOREIGN KEY (buyer_id) REFERENCES users (id)
+);
+
+CREATE TABLE confirmed_orders (
+    order_id INTEGER,
+    created DATETIME,
+    FOREIGN KEY (order_id) REFERENCES orders (id)
+);
