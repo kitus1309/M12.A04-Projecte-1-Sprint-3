@@ -1,4 +1,4 @@
-from flask import current_app, request, jsonify
+from flask import request, jsonify
 from . import api_bp
 from .errors import not_found
 from ..models import Product, Order
