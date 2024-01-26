@@ -1,9 +1,8 @@
 from flask import current_app, request, jsonify
 from . import api_bp
-from .errors import not_found, bad_request
+from .errors import not_found
 from ..models import Product, Order
 from .. import db_manager as db
-from ..helper_json import json_request, json_response
 
 # Llistar productes i filtrar pel títol 
 @api_bp.route('/products', methods=['GET'])
