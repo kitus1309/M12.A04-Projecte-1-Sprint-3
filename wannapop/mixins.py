@@ -33,9 +33,22 @@ class BaseMixin():
     def db_query(cls, *args):
         return db.session.query(cls, *args)
 
+    # @classmethod
+    # def db_query_with(cls, join_cls):
+    #     return cls.db_query(join_cls).join(join_cls)
+    
     @classmethod
-    def db_query_with(cls, join_cls):
-        return cls.db_query(join_cls).join(join_cls)
+    def db_query_with(cls, join_cls, outerjoin_cls = []):
+        #return cls.db_query(*join_cls).join(join_cls)
+        joins = join_cls if type(join_cls) is list else [join_cls]
+        ojoins = outerjoin_cls if type(outerjoin_cls) is list else [outerjoin_cls]
+        args = tuple(joins + ojoins)
+        query = cls.db_query(*args)
+        for c in joins:
+            query = query.join(c)
+        for c in ojoins:
+            query = query.outerjoin(c)
+        return query
 
     @classmethod
     def get(cls, id):
@@ -54,12 +67,12 @@ class BaseMixin():
         return cls.db_query().filter_by(**kwargs).order_by(cls.id.asc()).all()
 
     @classmethod
-    def get_with(cls, id, join_cls):
-        return cls.db_query_with(join_cls).filter(cls.id == id).one_or_none()
+    def get_with(cls, id, join_cls, outerjoin_cls = []):
+        return cls.db_query_with(join_cls, outerjoin_cls).filter(cls.id == id).one_or_none()
 
     @classmethod
-    def get_all_with(cls, join_cls):
-        return cls.db_query_with(join_cls).order_by(cls.id.asc()).all()
+    def get_all_with(cls, join_cls, outerjoin_cls = []):
+        return cls.db_query_with(join_cls, outerjoin_cls).order_by(cls.id.asc()).all()
     
     @staticmethod
     def db_enable_debug():
