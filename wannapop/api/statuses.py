@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify
-from .models import Status  
-
-api_bp = Blueprint('api_bp', __name__)
+from ..models import Status  
+from . import api_bp
 
 @api_bp.route('/statuses', methods=['GET'])
 def get_statuses():

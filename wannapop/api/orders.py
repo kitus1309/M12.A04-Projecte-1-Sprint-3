@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
-from .models import Order, ConfirmedOrder  # Assegura't que aquestes línies siguin correctes segons la teva estructura de projecte
-
-api_bp = Blueprint('api_orders', __name__)
+from ..models import Order, ConfirmedOrder  
+from . import api_bp
 
 @api_bp.route('/orders', methods=['POST'])
 def create_order():

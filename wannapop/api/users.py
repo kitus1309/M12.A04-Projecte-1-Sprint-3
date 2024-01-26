@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
-from .models import User, Product  # Assegura't que aquestes línies siguin correctes segons la teva estructura de projecte
-
-api_bp = Blueprint('api_users', __name__)
+from ..models import User, Product 
+from . import api_bp
 
 @api_bp.route('/users', methods=['GET'])
 def get_users():
