@@ -13,9 +13,9 @@ token_auth = HTTPTokenAuth()
 @basic_auth.verify_password
 def verify_password(email, password):
     user = User.get_filtered_by(email=email)
-    current_app.logger.debug("credentials: " + email)
+    current_app.logger.debug("credentials: " + email + password)
     current_app.logger.debug("auth user: " + ("None" if user is None else str(user.to_dict())))
-    if user and check_password_hash(user.password, password):
+    if user and user.check_password(password):
         return user
 
 @basic_auth.error_handler
