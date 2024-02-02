@@ -21,10 +21,9 @@ def templates_processor():
 @products_bp.route('/products/list')
 @perm_required(Action.products_list)
 def product_list():
-    # select amb join que retorna una llista de resultats
     products = Product.get_all_with(BannedProduct)
 
-    return render_template('products/list.html', products = products)
+    return render_template('products/list.html', products=products)
 
 @products_bp.route('/products/create', methods = ['POST', 'GET'])
 @perm_required(Action.products_create)
@@ -69,13 +68,12 @@ def product_create():
 @products_bp.route('/products/read/<int:product_id>')
 @perm_required(Action.products_read)
 def product_read(product_id):
-    # select amb join i 1 resultat
-    result = Product.get_with(product_id, BannedProduct)
+    result = Product.get_with(product_id, [Category, Status], BannedProduct)
 
     if not result:
-        abort(404)
+        abort(404, "Product {} not found".format(product_id))
 
-    (product, category, status, banned) = result
+    product, category, status, banned = result
     
     if not current_user.is_action_allowed_to_product(Action.products_read, product, banned):
         abort(403)
@@ -83,7 +81,7 @@ def product_read(product_id):
     if banned:
         flash("Producte prohibit per la següent raó: " + banned.reason, "danger")
 
-    return render_template('products/read.html', product = product, category = category, status = status)
+    return render_template('products/read.html', product=product, category=category, status=status)
 
 @products_bp.route('/products/update/<int:product_id>',methods = ['POST', 'GET'])
 @perm_required(Action.products_update)
