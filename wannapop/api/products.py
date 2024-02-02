@@ -1,11 +1,13 @@
 from flask import request, jsonify
 from . import api_bp
+from .helper_auth import token_auth
 from .errors import not_found
 from ..models import Product, Order
 from .. import db_manager as db
 
 # Llistar productes i filtrar pel títol 
 @api_bp.route('/products', methods=['GET'])
+@token_auth.login_required
 def get_products():
     name_query = request.args.get('title', '')
     products = Product.query.filter(Product.title.contains(name_query)).all()
@@ -16,6 +18,7 @@ def get_products():
 
 # Veure els detalls d’un producte
 @api_bp.route('/products/<int:id>', methods=['GET'])
+@token_auth.login_required
 def get_product_details(id):
     product = Product.get(id)
     if product:
@@ -29,6 +32,7 @@ def get_product_details(id):
 
 # Editar un producte propi
 @api_bp.route('/products/<int:product_id>', methods=['PUT'])
+@token_auth.login_required
 def update_product(product_id):
     product = Product.query.get(product_id)
     if not product:
@@ -45,6 +49,7 @@ def update_product(product_id):
 
 # Llistar ofertes rebudes per un producte
 @api_bp.route('/products/<int:product_id>/orders', methods=['GET'])
+@token_auth.login_required
 def get_product_orders(product_id):
     product = Product.query.get(product_id)
     if not product:
