@@ -153,6 +153,7 @@ class Order(db.Model, BaseMixin, SerializableMixin):
     buyer_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     offer = db.Column(db.Float, nullable=False)
     created = db.Column(db.DateTime, server_default=func.now())
+    confirmed = db.Column(db.Boolean, default=False)
     product = db.relationship("Product", backref="orders")
     buyer = db.relationship("User", backref="orders")
 

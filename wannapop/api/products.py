@@ -30,15 +30,22 @@ def get_product_details(id):
 
 # Editar un producte propi
 @api_bp.route('/products/<int:product_id>', methods=['PUT'])
+@token_auth.login_required
 def update_product(product_id):
     product = Product.query.get(product_id)
+
     if not product:
-        return jsonify({"error": "Not Found", "message": "Product not found", "success": False}), 404
+        return not_found("Product not found")
+
+    # Verificar que el usuario autenticado sea el "seller" del producto
+    if product.seller_id != token_auth.current_user().id:
+        return jsonify({"error": "Forbidden", "message": "You are not the seller of this product", "success": False}), 403
 
     data = request.get_json()
     for key, value in data.items():
         setattr(product, key, value)
     db.session.commit()
+
     return jsonify({
         "success": True,
         "data": product.to_dict()
