@@ -1,24 +1,19 @@
-INSERT INTO statuses (id, name, slug) VALUES
-(1, 'Nou', 'nou');
-UPDATE SQLITE_SEQUENCE SET seq = 1 WHERE name = 'statuses';
-
-INSERT INTO categories (id, name, slug) VALUES
-(1, 'Electrònica', 'electronica'),
-(2, 'Roba', 'roba'),
-(3, 'Joguines', 'joguines');
-UPDATE SQLITE_SEQUENCE SET seq = 3 WHERE name = 'categories';
-
--- Les contrasenyes són patata
-INSERT INTO users (id, name, email, role, verified, password) VALUES
-(1, 'Joan Pérez', 'joan@example.com', 'admin', TRUE, 'scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4'),
-(2, 'Anna García', 'anna@example.com', 'moderator', TRUE, 'scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4'),
-(3, 'Elia Rodríguez', 'elia@example.com', 'wanner', TRUE, 'scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4'),
-(4, 'Kevin Salardú', 'kevin@example.com', 'wanner', TRUE, 'scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4');
-UPDATE SQLITE_SEQUENCE SET seq = 4 WHERE name = 'users';
-
--- Inserir dades fictícies a la taula products
-INSERT INTO products (id, title, description, photo, price, category_id, status_id, seller_id) VALUES
-(1, 'Telèfon mòbil', 'Un telèfon intel·ligent d''última generació.', 'no_image.png', 599.99, 1, 1, 3),
-(2, 'Samarreta', 'Una samarreta de cotó de color blau.', 'no_image.png', 19.99, 2, 1, 3),
-(3, 'Ninot de peluix', 'Un ninot de peluix suau.', 'no_image.png', 9.99, 3, 1, 4);
-UPDATE SQLITE_SEQUENCE SET seq = 3 WHERE name = 'products';
+BEGIN TRANSACTION;
+INSERT INTO "categories" ("id","name","slug") VALUES (1,'Electrònica','electronica');
+INSERT INTO "categories" ("id","name","slug") VALUES (2,'Roba','roba');
+INSERT INTO "categories" ("id","name","slug") VALUES (4,'Joguines','joguines');
+INSERT INTO "orders" ("id","product_id","buyer_id","offer","created","confirmed") VALUES (1,10,5,20.0,'2024-01-26 15:12:05',1);
+INSERT INTO "products" ("id","title","description","photo","price","category_id","status_id","seller_id","created","updated") VALUES (7,'Camiseta','Una camiseta roja','no_image.png',23,2,1,5,'2024-01-26 15:12:32','2024-01-26 15:12:32');
+INSERT INTO "products" ("id","title","description","photo","price","category_id","status_id","seller_id","created","updated") VALUES (8,'Telèfon mòbil','Un telèfon intel·ligent d''''última generació.','no_image.png',599.99,1,1,5,'2024-01-26 15:14:12','2024-01-26 15:14:12');
+INSERT INTO "products" ("id","title","description","photo","price","category_id","status_id","seller_id","created","updated") VALUES (9,'Test','kdsakkd','no_image.png',132,1,1,4,'2024-02-02 19:46:48','2024-02-02 19:46:48');
+INSERT INTO "products" ("id","title","description","photo","price","category_id","status_id","seller_id","created","updated") VALUES (10,'Test put','Prueba put','Test.png',29.99,2,1,3,'2024-02-09 15:05:07','2024-02-09 16:09:01');
+INSERT INTO "statuses" ("id","name","slug") VALUES (1,'Nou','nou');
+INSERT INTO "statuses" ("id","name","slug") VALUES (2,'Usat','usat');
+INSERT INTO "statuses" ("id","name","slug") VALUES (3,'En Proceso','en-proceso');
+INSERT INTO "statuses" ("id","name","slug") VALUES (4,'Vendido','vendido');
+INSERT INTO "users" ("id","name","email","role","password","email_token","verified","created","updated","token","token_expiration") VALUES (1,'Joan Pérez','joan@example.com','admin','scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4',NULL,1,'2023-12-10 08:20:25','2024-02-09 14:46:43','1d8d25ac8f8faebb44b3e30ba23adb37','2024-02-09 15:46:43.178828');
+INSERT INTO "users" ("id","name","email","role","password","email_token","verified","created","updated","token","token_expiration") VALUES (2,'Anna García','anna@example.com','moderator','scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4',NULL,1,'2023-12-10 08:20:25','2023-12-10 08:20:25',NULL,NULL);
+INSERT INTO "users" ("id","name","email","role","password","email_token","verified","created","updated","token","token_expiration") VALUES (3,'Elia Rodríguez','elia@example.com','wanner','scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4',NULL,1,'2023-12-10 08:20:25','2024-02-09 15:28:22','a12f8cb0e26fcd0b9abda23ca547c5ea','2024-02-09 16:28:22.459936');
+INSERT INTO "users" ("id","name","email","role","password","email_token","verified","created","updated","token","token_expiration") VALUES (4,'Kevin Salardú','kevin@example.com','wanner','scrypt:32768:8:1$lwqNpblQ9OiKBfeM$4d63ebdf494cc8e363f14494bca1c5246f6689b45904431f69fbcb535b7e41bd012e9b41c850125d7f8b790cb320579a46427b69eda892517669eba0244b77b4',NULL,1,'2023-12-10 08:20:25','2024-02-02 19:52:19','83a73f6e9cd858122e1a521f7ca8273c','2024-02-02 19:52:18.634092');
+INSERT INTO "users" ("id","name","email","role","password","email_token","verified","created","updated","token","token_expiration") VALUES (5,'claudiu','clvl@fp.insjoaquimmir.cat','wanner','scrypt:32768:8:1$eebvVIfPMhFMJxEC$18d2f866271bdcfdd5bda24a617fd4d94dbce577463b1a0a37a90288c490b0c8264a387f700950540dd4ac003eaaff9c350e4cdef0e8049050c847afe31fd514','Nwi6umy5jMgvmRmurN3r168FL0o',1,'2024-01-19 16:34:30','2024-02-09 15:04:22','9836146ae7ca21cfb34378f179f3bb8f','2024-02-09 15:04:21.246987');
+COMMIT;
