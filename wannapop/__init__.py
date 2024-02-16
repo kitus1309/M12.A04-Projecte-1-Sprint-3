@@ -28,7 +28,8 @@ def create_app():
     principal_manager.init_app(app)
     mail_manager.init_app(app)
     toolbar.init_app(app) # the toolbar is only enabled in debug mode
-
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+    
     with app.app_context():
         from . import commands, routes_main, routes_auth, routes_admin, routes_products, routes_category, routes_status
         from .api import api_bp
