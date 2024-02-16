@@ -18,13 +18,21 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
-    ports:
-      - 8080:80
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: tgtsAXhC77nTjifT
     depends_on:
       - db
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - phpmyadmin
 
 volumes:
   db-data:
